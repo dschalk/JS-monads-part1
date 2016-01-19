@@ -128,34 +128,6 @@ var add = function(a,b) {
   return mon;
 }
 
-var pure = function pure(x,mon) {
-  if (typeof mon.x.x == 'undefined') {
-    return mon;
-  }
-  mon.ret(mon.x.x);
-  return mon;
-};
-
-var bnd = function bnd(f, mon) {
-  for (var _len5 = arguments.length, args = Array(_len5 > 2 ? _len5 - 2 : 0), _key5 = 2; _key5 < _len5; _key5++) {
-    args[_key5 - 2] = arguments[_key5];
-  }
-
-  return f.apply(undefined, [mon.x, mon].concat(args));
-};
-
-var fmap = function fmap(f, mon) {
-  for (var _len6 = arguments.length, args = Array(_len6 > 2 ? _len6 - 2 : 0), _key6 = 2; _key6 < _len6; _key6++) {
-    args[_key6 - 2] = arguments[_key6];
-  }
-
-  var v = mon.x;
-  mon.ret(f.apply(undefined, [v].concat(args)));
-  return mon;
-};
-
-var Val = 0;
-
 var M = function M(a) {
   return new Monad(a);
 };
@@ -182,13 +154,13 @@ var mMI4 = MI(0, 'mMI4');
 var mMI5 = MI(0, 'mMI5');
 var mMI6 = MI(0, 'mMI6');
 
-var doub = function doub(mon) {
-  mon.ret(mon.x + mon.x);
+var doub = function doub(v) {
+  let mon = new Monad(v + v);
   return mon;
 };
 
-var square = function square(mon) {
-  mon.ret(mon.x * mon.x);
+var square = function square(v) {
+  let mon = new Monad(v * v);
   return mon;
 };
 
@@ -197,8 +169,8 @@ var tripple = function tripple(mon) {
   return mon;
 };
 
-var mult = function mult(mon, y) {
-  mon.ret(mon.x * y);
+var mult = function mult(x, y) {
+  let mon = new Monad(x * y);
   return mon;
 };
 
@@ -253,32 +225,6 @@ var jackpot = function jackpot(mon) {
   }
   mM10.ret("No jackpot time");
   return mon;
-};
-
-var bench = function bench(mon) {
-  var self = undefined;
-  var k = 0;
-  var j = 0;
-  var d1 = new Date();
-  for (k; k < 1000000; k++) {
-    mM1 = new Monad(k);
-  }
-  mon.ret(new Date() - d1);
-  return mon;
-};
-
-var bench2 = function bench2() {
-  var self = undefined;
-  var k = 0;
-  var j = 0;
-  var d1 = new Date();
-  for (k; k < 1000000; k++) {
-    mM2.ret(k);
-  }
-  resBench2 = new Date() - d1;
-  setTimeout(function () {
-    self.forceUpdate();
-  }, 12);
 };
 
 var cu = function cu(x) {
