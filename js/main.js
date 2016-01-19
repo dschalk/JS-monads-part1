@@ -43,6 +43,10 @@ var style8 = style2;
 var style8e = style1;
 var style8l = style2;
 
+var style9 = style2;
+var style9e = style1;
+var style9l = style2;
+
 var styleR = style2;
 var styleRe = style1;
 var styleRl = style2;
@@ -50,39 +54,44 @@ var styleRl = style2;
 function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) { 
     return h('div',{style: style3}, 
     [  h('div',{style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px'}}, 
-    [ h('h2', {style: {textAlign: 'center', color:  '#BBFFFF'}}, 'Javascript Monads Part 1'),
+    [ h('h2', {style: {textAlign: 'center', color:  '#BBFFFF'}}, 'JS Monads Part 1'),
       h('span', {style: {marginLeft: '18px'}},  'The code for this single-page site is at ' ),
-      h('a', {props: {href: 'https://github.com/dschalk/javascript-monads-part1'}, style: {color: '#EECCFF'}}, 'javascript-monads-part1' ),
+      h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part1'}, style: {color: '#EECCFF'}}, 'javascript-monads-part1' ),
       h('span', ' If pressing F12 switches your browser to a console, I think you will find that you have access to all of the monads and functions being used in this presentation, Try entering "mM1.ret("Hello world")" on the command like. Press F12 again and roll over (don\'t click it) the RE-SET button at the bottom of the right column. When the column gets updated, the new value of mM1.x that you created should appear. '  ),
       h('h3', 'This Series Is For Web Developers' ),
-     h('p', 'This is not about category theory or the lambda calculus. I call my little inventions "monads", and I am sorry if that drives away that dwindling breed of developers who strive for little more than to master JQuery and whatever frameword they are using. I developed the manads to make my work easier and more satisfying, and now I am taking time out to share them with whomever is interested. ' ),
+     h('p', 'This is not about category theory or the lambda calculus. I verified that the monads presented here obey the Haskell monad laws because that reassures me that they are robust and versitile. I didn\t create a new ">>=" operator, so "bind" is a method on the monads. There is_a "ret" method with resembles Haskell "return", and a "ret" function which is just like its Haskell counterpart.' ),
      h('p', 'This project centers around a simple monad constructor, called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. ' ),
     h('p', ' Here is how the Monad class is defined:'),
       cow.monad,
     h('p', 'And here are the functions we will use in this brief demonstration: '  ),  
       cow.functions1,
-    h('p', 'These are simple math functions operating on monads with number values. The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations, so there is a one to one corresponsdence between the set of all possible javascript values and all possible monads.'  ), 
-   h('h3', 'Do monads support lambda expressions?'  ),
-   h('p', 'Click below to see the answer.'  ),
-   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo1 }, style: style4}, [
-    cow.lambdas] ),
-   h('p', 'Or, putting it more succinctly,'  ), 
+    h('p', 'add and cube are simple math functions. Monads with numeric values can use them with their "bnd" methods to manipulate their values and, in a similar manner, anonymous monads can be transformed along a chain of computatios. They can even be used to spawn anonymous monads, but that is what "ret" is for. ' ),
+    h('p',' ".x" extracts the result of an anonymous chain of computations. Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. ' ), 
+   h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo1 }, style: style7},
+   `mM5.ret(ret(0).bnd(add,3).bnd(cube).x)` ),
+   h('p', 'The following computation yields the same result, demonstrating the Haskell monad associativity law. It is good to work with computation links that are "associative under Kleisli composition" as one might put it in a mathematical proof. For my purposes, it means these monads are robust and reiliant, and the order of evaluation along a chain is something about which I not concerned.   ' ),
+   h('button', {on: { mouseenter: update8e, mouseleave: update8l, click: updateDemo2 }, style: style8},
+  `ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)));`  ),
+   h('p', 'Notice how x was handed to mM6 in the above computation. In the next computation, we send x even further down the line and combine it with mM2\'s value to get the result.'  ), 
    h('button', {on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5},
                'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'  ),
-   h('p', 'bnd sends itself down the chain of monads. It can change the values of other monads and have its value changed along the way. '  ),
-      h('h3',  'How The Simple Monads Work' ),
-      h('p', 'If setting mM1 to 0, adding 3, and cubing it to give mM1 a value of 27 this way ' ),
-      h('pre', 'mM1.ret(0).bnd(add,3).bnd(cube)'  ), 
-      h('p', 'is too object-oriented for any of you functional programming zealots, you can avoid object methods by doing it this way: ' ),
-      h('pre',
-'   cube(add(add(mM1,-mM1.x),3))  '           ),    
-      h('p', ' "mM1.bnd(cube)" does exactly what "cube(mM1)" does. They both return mM1 after cubing its value, or return mM1 with a value of NAN if its value was not a number. In the above expression, the innermost call to "add" sets mM1.x to 0; the next call adds 3, and cube yields mM1.x = 27, no matter what the value of mM1 was before. The above expression can make a person cross-eyed, so I will stick with linking objects when nesting operations.'   ),
-      h('h3',  'Anonymous Monads' ),
-      h('p', 'Chains of computations can be performed anonymously, releasing the final value into a named monad or releasing it as a side-effect in the very last step. Here\'s an example: '  ),
-   h('button', {on: { mouseenter: update6e, mouseleave: update6l, click: updateAnon }, style: style6},
-               'new Monad(0).bnd(add,3).bnd(cube).bnd(x => mM1.ret(x.x))'  ),
+   h('p', ' The bnd method provides the means to include versitile lambdas in chains of computations, tests, and other processes. '  ),
+   h('p', 'The other Haskell laws are:' ),
+   h('pre', 
+`ret(v).bnd(f) = f(v)
+m.bnd(ret) = m
+`
+    ),
+   h('p', 'The following examples illuste that the monads are obeying these laws. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow"  '  ),
+   h('button', {on: { mouseenter: update9e, mouseleave: update9l, click: updateDemo5 }, style: style9},
+               `mM1.ret(ret(4).bnd(cube).x === cube(4).x)` ),
+   h('br'),
+   h('br'),
+   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo6 }, style: style4},
+               `mM2.ret(ret('cow').bnd(ret).x === ret('cow').x)`  ),
+    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. The one to one corresponsdence between the set of all possible javascript values operations upon them and all possible monads and arguments for "bnd" means that monads can do just about anything inside the monad space without affecting anything outside of it, and release their side affects only when needed and in a ways that avoid mutating ordinary variables.'  ), 
       h('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '  ),
-   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style5}, [
+   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style4}, [
    h('pre',
 `var hello = new Monad;
 hello.ret('Hello world');`   
@@ -90,9 +99,8 @@ hello.ret('Hello world');`
       h('p', 'Bye for now.'  ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
       h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed . If the computations along the chain manipulate only monadic values, with a possible side effect only at the last link, we can use only pure (side-effect free) functions outside of the Monad and MonadIter classes. We could also refrain from mutating values outside of the monad world. What we would gain and what we would lose are hard to know from this theoretical vantage point, so in some future installment in this series, I will dig in and do some experimenting. "Fun with monads"? Well, I\'m having fun.  ' ),
-        
       h('span','The open source code for this page is at '  ),  
-      h('a', {props: {href: 'https://github.com/dschalk/javascript-monads-part1'}, style: {color: '#EECCFF'}}, 'fun_with_monads' ),
+      h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part1'}, style: {color: '#EECCFF'}}, 'javascript-monads-part1' ),
       h('span', '  Demonstrations of this and the next pages in "Javascript Monads" project can be found at ',   ),
       h('a', {props: {href: 'http://schalk.net'}, style: {color: '#EECCFF'}}, 'schalk.net' ),
       h('br', ),   
@@ -141,8 +149,8 @@ hello.ret('Hello world');`
     ] )
 }  
 
-
-function update0(event) {
+function update0() {
+  console.log('Hello from update0');
   const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x, hello.x);
   oldVnode = patch(oldVnode, newVnode);
 }
@@ -166,24 +174,19 @@ function update(event) {
   update0();
 }
 
-function update2(event) {
-  mM1.ret(6).bnd(x => mM2.ret(7).bnd(y => mM3.ret(x.x * y.x)))
+function update2() {
+  mM1.ret(6).bnd(x => mM2.ret(7).bnd(y => mM3.ret(x * y)))
   update0();
 }
 // ((((((((((***********************************************************
 
-function updateDemo1() {
-    mM3.ret(2)
-     .bnd(() => mM2
-     .ret(7)
-     .bnd(() => mM1
-     .ret(3)
-     .bnd(x => mM2
-     .bnd(y => mM3
-     .bnd(z => mM4
-     .ret(x.x*y.x*z.x) 
-     .bnd(() => mM5.ret('Lambda!')           
-        ))))))
+function updateDemo3() {
+  mM3
+  .ret(2)
+  .bnd(x => mM4
+  .ret(21)
+  .bnd(y => mM5
+  .ret(x*y)))
   update0();
 }
 
@@ -192,35 +195,32 @@ function updateHello() {
   update0();
 }
 
-
 function updateAnon() {
-  new Monad(0).bnd(add,3).bnd(cube).bnd(x => mM1.ret(x.x))
+  new Monad(0).bnd(add,3).bnd(cube).bnd(x => mM1.ret(x))
   update0();
 }
 
+function updateDemo1 () {
+  ret(0).bnd(add,3).bnd(cube).bnd(x => mM5.ret(x));
+  update0();
+}
 
 function updateDemo2() {
-  add(3, mM1)
-  update0();
-}
-
-function updateDemo3() {
-  add(3, mM1)
-  update0();
-}
-
-function updateDemo4() {
-  mM1.bnd(mM1.ret)
+  ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)));
   update0();
 }
 
 function updateDemo5() {
-  mM1.bnd(val => add(mM1.x, mM1, 1).bnd(cube))
+  let w = (ret(4).bnd(cube).x === cube(4).x);
+  console.log('updateDemo5: ', w);
+  mM1.ret(w);
   update0();
 }
 
 function updateDemo6() {
-  mM1.bnd(add,1).bnd(cube)
+  let w = (ret('cow').bnd(ret).x === ret('cow').x);
+  console.log('updateDemo6: ', w);
+  mM2.ret(w);
   update0();
 }
 
@@ -283,8 +283,11 @@ function updateTest(event) {
   update0();
 }
 
-function updateSteps(event) {
-    mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret).bnd(mM4.ret)
+function updateSteps() {
+    mM1.ret(0)
+     .bnd(x => mM2.ret(x)
+     .bnd(() => mM3.ret(0()
+     .bnd(x => mM4.ret(x)
      .bnd(() => mM1.ret('Click the mMI2.release() button to proceed')
      .bnd(() => mMI2.block()
      .bnd(() => mM2.ret('Click it again.')
@@ -295,7 +298,7 @@ function updateSteps(event) {
      .bnd(() => mMI2.block()
      .bnd(() => mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret)
      .bnd(mM4.ret)
-      ))))))))) 
+      ))))))))) ))))
   console.log(mM1.x, mM2.x);
   update0();
 }
@@ -346,6 +349,36 @@ function update6l(event) {
   update0();
 }
 
+function update7e(event) {
+  style7 = style1;
+  update0();
+}
+
+function update7l(event) {
+  style7 = style2;
+  update0();
+}
+
+function update8e(event) {
+  style8 = style1;
+  update0();
+}
+
+function update8l(event) {
+  style8 = style2;
+  update0();
+}
+
+function update9e(event) {
+  style9 = style1;
+  update0();
+}
+
+function update9l(event) {
+  style9 = style2;
+  update0();
+}
+
 function updateRe(event) {
   styleR = style1;
   update0();
@@ -363,5 +396,14 @@ function updateEvent(event) {
 }
 
 oldVnode = patch(oldVnode, view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x));
+
+var update = function update(v) {
+  var mon = new Monad(v);
+  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
+  oldVnode = patch(oldVnode, newVnode);
+  return mon;
+}
+
+
 
 

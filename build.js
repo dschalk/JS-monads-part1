@@ -19,11 +19,11 @@ var monad = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, 
 
 var monadIter = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n    constructor(z,g) {\n      this.x = z;\n      this.id = g;\n      this.p = [];\n      this.block = () => {\n        this.x = true;\n        return this;\n        }\n      this.release = () => {\n        this.x = false;\n        let self = this;\n        let p = this.p;\n        if (p[1] === \'bnd\') {\n          p[2](self.x, self, ...p[3]);\n          return self;\n        }\n        if (p[1] === \'ret\') {\n          self.x = p[2];\n          return self;\n        }\n        if (p[1] === \'fmap\') { \n          p[3].ret(p[2](p[3].x, ...p[4]));\n          return p[3];\n        }\n     }\n      this.bnd = (func, ...args) => {\n        let self = this;\n        if (self.x === false) {\n          func(self.x, ...args);\n          return self;\n        }\n        if (self.x === true) {\n          self.p = [self.id, \'bnd\', func, args];\n          return self;\n        }\n      }\n      this.fmap = (f, mon = this, ...args) => {   \n        let self = this;\n          if (self.x === false) {\n            mon.ret(f(mon.x,  ...args));\n            return mon;\n          }\n          if (self.x === true) {\n            self.p = [self.id, \'fmap\', f, mon, args];\n            return self;\n          }\n      }\n      this.ret = a => { \n        let self = this;\n          if (self.x === false) {\n            self.x = a;\n          }\n          if (self.x === true) {\n          self.p = [self.id, \'ret\', a];\n          return self;\n          }\n        this.x = false;\n        return this;\n      }\n    }\n  }\n    constructor(z,g) {\n\n        this.x = z;\n        this.id = g;\n        this.flag = false;\n        this.p = [];\n  \n        this.block = () => {\n            this.flag = true;\n            return this;\n        }\n\n        this.release = () => {\n            let self = this;\n            let p = this.p;\n  \n            if (p[1] === \'bnd\') {\n                p[2](self.x, self, ...p[3]);\n                self.flag = false;\n                return self;\n            }\n  \n            if (p[1] === \'ret\') {\n                self.x = p[2];\n                self.flag = false;\n                return self;\n            }\n  \n            if (p[1] === \'fmap\') { \n                p[3].ret(p[2](p[3].x, ...p[4]));\n                self.flag = false;\n                return p[3];\n            }\n        }\n    };\n');
 
-var steps = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\n    mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret).bnd(mM4.ret)\n     .bnd(() => mM1.ret(\'Click the mMI2.release() button to proceed\')\n     .bnd(refresh)\n     .bnd(() => mMI2.block()\n     .bnd(() => mM2.ret(\'Click it again.\').bnd(refresh)\n     .bnd(() => mMI2.block()\n     .bnd(() => mM3.ret(\'Keep going\').bnd(refresh)\n     .bnd(() => mMI2.block()\n     .bnd(() => mM4.ret(\'One more\').bnd(refresh)\n     .bnd(() => mMI2.block()\n     .bnd(() => mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret)\n     .bnd(mM4.ret).bnd(refresh)\n      ))))))))) \n');
+var steps = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\n    mM1.ret(0)\n     .bnd(x => mM2.ret(x)\n     .bnd(() => mM3.ret(0()\n     .bnd(x => mM4.ret(x)\n     .bnd(() => mM1.ret(\'Click the mMI2.release() button to proceed\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM2.ret(\'Click it again.\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM3.ret(\'Keep going\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM4.ret(\'One more\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret)\n     .bnd(mM4.ret)\n      ))))))))) ))))\n     update0();\n');
 
 var test = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, 'mM8.ret(\'test\');\nmM2.ret(mM8.x);\nmM3.fmap(_ => mM8.x);\nmM8.bnd(mM4.ret);');
 
-var functions1 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\nvar cube = function(v) {\n  var mon = new Monad(v*v*v);\n  return mon;\n}\n\nvar add = function(a,b) {\n  var mon = new Monad(a+b);\n  return mon;\n}\n');
+var functions1 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\nvar cube = function(v) {\n  var mon = new Monad(v*v*v);\n  return mon;\n}\n\nvar add = function(a,b) {\n  var mon = new Monad(a+b);\n  return mon;\n}\n\nvar ret = function ret(v) {\n  var mon = new Monad(v);\n  return mon;\n}\n');
 
 var lambdas = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\n    mM3.ret(2)\n     .bnd(() => mM2\n     .ret(7)\n     .bnd(() => mM1\n     .ret(3)\n     .bnd(x => mM2\n     .bnd(y => mM3\n     .bnd(z => mM4\n     .ret(x*y*z) \n     .bnd(() => mM5.ret(\'Lambda!\')           \n        ))))))\n');
 
@@ -100,15 +100,20 @@ var style8 = style2;
 var style8e = style1;
 var style8l = style2;
 
+var style9 = style2;
+var style9e = style1;
+var style9l = style2;
+
 var styleR = style2;
 var styleRe = style1;
 var styleRl = style2;
 
 function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
-  return (0, _snabbdomH2['default'])('div', { style: style3 }, [(0, _snabbdomH2['default'])('div', { style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px' } }, [(0, _snabbdomH2['default'])('h2', { style: { textAlign: 'center', color: '#BBFFFF' } }, 'Javascript Monads Part 1'), (0, _snabbdomH2['default'])('span', { style: { marginLeft: '18px' } }, 'The code for this single-page site is at '), (0, _snabbdomH2['default'])('a', { props: { href: 'https://github.com/dschalk/javascript-monads-part1' }, style: { color: '#EECCFF' } }, 'javascript-monads-part1'), (0, _snabbdomH2['default'])('span', ' If pressing F12 switches your browser to a console, I think you will find that you have access to all of the monads and functions being used in this presentation, Try entering "mM1.ret("Hello world")" on the command like. Press F12 again and roll over (don\'t click it) the RE-SET button at the bottom of the right column. When the column gets updated, the new value of mM1.x that you created should appear. '), (0, _snabbdomH2['default'])('h3', 'This Series Is For Web Developers'), (0, _snabbdomH2['default'])('p', 'This is not about category theory or the lambda calculus. I call my little inventions "monads", and I am sorry if that drives away that dwindling breed of developers who strive for little more than to master JQuery and whatever frameword they are using. I developed the manads to make my work easier and more satisfying, and now I am taking time out to share them with whomever is interested. '), (0, _snabbdomH2['default'])('p', 'This project centers around a simple monad constructor, called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. '), (0, _snabbdomH2['default'])('p', ' Here is how the Monad class is defined:'), _cowJs2['default'].monad, (0, _snabbdomH2['default'])('p', 'And here are the functions we will use in this brief demonstration: '), _cowJs2['default'].functions1, (0, _snabbdomH2['default'])('p', 'These are simple math functions operating on monads with number values. The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations, so there is a one to one corresponsdence between the set of all possible javascript values and all possible monads.'), (0, _snabbdomH2['default'])('h3', 'Do monads support lambda expressions?'), (0, _snabbdomH2['default'])('p', 'Click below to see the answer.'), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo1 }, style: style4 }, [_cowJs2['default'].lambdas]), (0, _snabbdomH2['default'])('p', 'Or, putting it more succinctly,'), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5 }, 'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'), (0, _snabbdomH2['default'])('p', 'bnd sends itself down the chain of monads. It can change the values of other monads and have its value changed along the way. '), (0, _snabbdomH2['default'])('h3', 'How The Simple Monads Work'), (0, _snabbdomH2['default'])('p', 'If setting mM1 to 0, adding 3, and cubing it to give mM1 a value of 27 this way '), (0, _snabbdomH2['default'])('pre', 'mM1.ret(0).bnd(add,3).bnd(cube)'), (0, _snabbdomH2['default'])('p', 'is too object-oriented for any of you functional programming zealots, you can avoid object methods by doing it this way: '), (0, _snabbdomH2['default'])('pre', '   cube(add(add(mM1,-mM1.x),3))  '), (0, _snabbdomH2['default'])('p', ' "mM1.bnd(cube)" does exactly what "cube(mM1)" does. They both return mM1 after cubing its value, or return mM1 with a value of NAN if its value was not a number. In the above expression, the innermost call to "add" sets mM1.x to 0; the next call adds 3, and cube yields mM1.x = 27, no matter what the value of mM1 was before. The above expression can make a person cross-eyed, so I will stick with linking objects when nesting operations.'), (0, _snabbdomH2['default'])('h3', 'Anonymous Monads'), (0, _snabbdomH2['default'])('p', 'Chains of computations can be performed anonymously, releasing the final value into a named monad or releasing it as a side-effect in the very last step. Here\'s an example: '), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update6e, mouseleave: update6l, click: updateAnon }, style: style6 }, 'new Monad(0).bnd(add,3).bnd(cube).bnd(x => mM1.ret(x.x))'), (0, _snabbdomH2['default'])('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style5 }, [(0, _snabbdomH2['default'])('pre', 'var hello = new Monad;\nhello.ret(\'Hello world\');')]), (0, _snabbdomH2['default'])('p', 'Bye for now.'), (0, _snabbdomH2['default'])('h3', 'Next: Websocket interractions with MonadIter instances. '), (0, _snabbdomH2['default'])('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed . If the computations along the chain manipulate only monadic values, with a possible side effect only at the last link, we can use only pure (side-effect free) functions outside of the Monad and MonadIter classes. We could also refrain from mutating values outside of the monad world. What we would gain and what we would lose are hard to know from this theoretical vantage point, so in some future installment in this series, I will dig in and do some experimenting. "Fun with monads"? Well, I\'m having fun.  '), (0, _snabbdomH2['default'])('span', 'The open source code for this page is at '), (0, _snabbdomH2['default'])('a', { props: { href: 'https://github.com/dschalk/javascript-monads-part1' }, style: { color: '#EECCFF' } }, 'fun_with_monads'), (0, _snabbdomH2['default'])('span', '  Demonstrations of this and the next pages in "Javascript Monads" project can be found at '), (0, _snabbdomH2['default'])('a', { props: { href: 'http://schalk.net' }, style: { color: '#EECCFF' } }, 'schalk.net'), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('div', { style: { height: '300px' } })]), (0, _snabbdomH2['default'])('div', { style: { width: '30%', position: 'fixed', top: '200px', right: '15px', color: '#CCFDDA' } }, [(0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM1.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m1), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM2.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m2), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM3.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m3), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM4.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m4), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM5.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m5), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM6.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m6), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM7.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m7), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM8.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m8), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mMI1.x: '), (0, _snabbdomH2['default'])('span', { style: styleMI }, '  ' + mI1), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mMI2.x: '), (0, _snabbdomH2['default'])('span', { style: styleMI }, '  ' + mI1), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'hello.x: '), (0, _snabbdomH2['default'])('span', { style: styleMI }, '  ' + hello), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('button', { on: { mouseenter: updateRe, mouseleave: updateRl, click: updateR }, style: styleR }, 'RE-SET')])]);
+  return (0, _snabbdomH2['default'])('div', { style: style3 }, [(0, _snabbdomH2['default'])('div', { style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px' } }, [(0, _snabbdomH2['default'])('h2', { style: { textAlign: 'center', color: '#BBFFFF' } }, 'JS Monads Part 1'), (0, _snabbdomH2['default'])('span', { style: { marginLeft: '18px' } }, 'The code for this single-page site is at '), (0, _snabbdomH2['default'])('a', { props: { href: 'https://github.com/dschalk/JS-monads-part1' }, style: { color: '#EECCFF' } }, 'javascript-monads-part1'), (0, _snabbdomH2['default'])('span', ' If pressing F12 switches your browser to a console, I think you will find that you have access to all of the monads and functions being used in this presentation, Try entering "mM1.ret("Hello world")" on the command like. Press F12 again and roll over (don\'t click it) the RE-SET button at the bottom of the right column. When the column gets updated, the new value of mM1.x that you created should appear. '), (0, _snabbdomH2['default'])('h3', 'This Series Is For Web Developers'), (0, _snabbdomH2['default'])('p', 'This is not about category theory or the lambda calculus. I verified that the monads presented here obey the Haskell monad laws because that reassures me that they are robust and versitile. I didn\t create a new ">>=" operator, so "bind" is a method on the monads. There is_a "ret" method with resembles Haskell "return", and a "ret" function which is just like its Haskell counterpart.'), (0, _snabbdomH2['default'])('p', 'This project centers around a simple monad constructor, called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. '), (0, _snabbdomH2['default'])('p', ' Here is how the Monad class is defined:'), _cowJs2['default'].monad, (0, _snabbdomH2['default'])('p', 'And here are the functions we will use in this brief demonstration: '), _cowJs2['default'].functions1, (0, _snabbdomH2['default'])('p', 'add and cube are simple math functions. Monads with numeric values can use them with their "bnd" methods to manipulate their values and, in a similar manner, anonymous monads can be transformed along a chain of computatios. They can even be used to spawn anonymous monads, but that is what "ret" is for. '), (0, _snabbdomH2['default'])('p', ' ".x" extracts the result of an anonymous chain of computations. Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. '), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo1 }, style: style7 }, 'mM5.ret(ret(0).bnd(add,3).bnd(cube).x)'), (0, _snabbdomH2['default'])('p', 'The following computation yields the same result, demonstrating the Haskell monad associativity law. It is good to work with computation links that are "associative under Kleisli composition" as one might put it in a mathematical proof. For my purposes, it means these monads are robust and reiliant, and the order of evaluation along a chain is something about which I not concerned.   '), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update8e, mouseleave: update8l, click: updateDemo2 }, style: style8 }, 'ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)));'), (0, _snabbdomH2['default'])('p', 'Notice how x was handed to mM6 in the above computation. In the next computation, we send x even further down the line and combine it with mM2\'s value to get the result.'), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5 }, 'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'), (0, _snabbdomH2['default'])('p', ' The bnd method provides the means to include versitile lambdas in chains of computations, tests, and other processes. '), (0, _snabbdomH2['default'])('p', 'The other Haskell laws are:'), (0, _snabbdomH2['default'])('pre', 'ret(v).bnd(f) = f(v)\nm.bnd(ret) = m\n'), (0, _snabbdomH2['default'])('p', 'The following examples illuste that the monads are obeying these laws. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow"  '), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update9e, mouseleave: update9l, click: updateDemo5 }, style: style9 }, 'mM1.ret(ret(4).bnd(cube).x === cube(4).x)'), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo6 }, style: style4 }, 'mM2.ret(ret(\'cow\').bnd(ret).x === ret(\'cow\').x)'), (0, _snabbdomH2['default'])('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. The one to one corresponsdence between the set of all possible javascript values operations upon them and all possible monads and arguments for "bnd" means that monads can do just about anything inside the monad space without affecting anything outside of it, and release their side affects only when needed and in a ways that avoid mutating ordinary variables.'), (0, _snabbdomH2['default'])('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '), (0, _snabbdomH2['default'])('button', { on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style4 }, [(0, _snabbdomH2['default'])('pre', 'var hello = new Monad;\nhello.ret(\'Hello world\');')]), (0, _snabbdomH2['default'])('p', 'Bye for now.'), (0, _snabbdomH2['default'])('h3', 'Next: Websocket interractions with MonadIter instances. '), (0, _snabbdomH2['default'])('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed . If the computations along the chain manipulate only monadic values, with a possible side effect only at the last link, we can use only pure (side-effect free) functions outside of the Monad and MonadIter classes. We could also refrain from mutating values outside of the monad world. What we would gain and what we would lose are hard to know from this theoretical vantage point, so in some future installment in this series, I will dig in and do some experimenting. "Fun with monads"? Well, I\'m having fun.  '), (0, _snabbdomH2['default'])('span', 'The open source code for this page is at '), (0, _snabbdomH2['default'])('a', { props: { href: 'https://github.com/dschalk/JS-monads-part1' }, style: { color: '#EECCFF' } }, 'javascript-monads-part1'), (0, _snabbdomH2['default'])('span', '  Demonstrations of this and the next pages in "Javascript Monads" project can be found at '), (0, _snabbdomH2['default'])('a', { props: { href: 'http://schalk.net' }, style: { color: '#EECCFF' } }, 'schalk.net'), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('div', { style: { height: '300px' } })]), (0, _snabbdomH2['default'])('div', { style: { width: '30%', position: 'fixed', top: '200px', right: '15px', color: '#CCFDDA' } }, [(0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM1.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m1), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM2.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m2), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM3.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m3), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM4.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m4), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM5.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m5), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM6.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m6), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM7.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m7), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mM8.x: '), (0, _snabbdomH2['default'])('span', { style: styleM }, '  ' + m8), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mMI1.x: '), (0, _snabbdomH2['default'])('span', { style: styleMI }, '  ' + mI1), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'mMI2.x: '), (0, _snabbdomH2['default'])('span', { style: styleMI }, '  ' + mI1), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('span', 'hello.x: '), (0, _snabbdomH2['default'])('span', { style: styleMI }, '  ' + hello), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('br'), (0, _snabbdomH2['default'])('button', { on: { mouseenter: updateRe, mouseleave: updateRl, click: updateR }, style: styleR }, 'RE-SET')])]);
 }
 
-function update0(event) {
+function update0() {
+  console.log('Hello from update0');
   var newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x, hello.x);
   oldVnode = patch(oldVnode, newVnode);
 }
@@ -133,28 +138,20 @@ function update(event) {
   update0();
 }
 
-function update2(event) {
+function update2() {
   mM1.ret(6).bnd(function (x) {
     return mM2.ret(7).bnd(function (y) {
-      return mM3.ret(x.x * y.x);
+      return mM3.ret(x * y);
     });
   });
   update0();
 }
 // ((((((((((***********************************************************
 
-function updateDemo1() {
-  mM3.ret(2).bnd(function () {
-    return mM2.ret(7).bnd(function () {
-      return mM1.ret(3).bnd(function (x) {
-        return mM2.bnd(function (y) {
-          return mM3.bnd(function (z) {
-            return mM4.ret(x.x * y.x * z.x).bnd(function () {
-              return mM5.ret('Lambda!');
-            });
-          });
-        });
-      });
+function updateDemo3() {
+  mM3.ret(2).bnd(function (x) {
+    return mM4.ret(21).bnd(function (y) {
+      return mM5.ret(x * y);
     });
   });
   update0();
@@ -167,35 +164,38 @@ function updateHello() {
 
 function updateAnon() {
   new Monad(0).bnd(add, 3).bnd(cube).bnd(function (x) {
-    return mM1.ret(x.x);
+    return mM1.ret(x);
+  });
+  update0();
+}
+
+function updateDemo1() {
+  ret(0).bnd(add, 3).bnd(cube).bnd(function (x) {
+    return mM5.ret(x);
   });
   update0();
 }
 
 function updateDemo2() {
-  add(3, mM1);
-  update0();
-}
-
-function updateDemo3() {
-  add(3, mM1);
-  update0();
-}
-
-function updateDemo4() {
-  mM1.bnd(mM1.ret);
-  update0();
-}
-
-function updateDemo5() {
-  mM1.bnd(function (val) {
-    return add(mM1.x, mM1, 1).bnd(cube);
+  ret(0).bnd(function (x) {
+    return add(x, 3).bnd(cube).bnd(function (x) {
+      return mM6.ret(x);
+    });
   });
   update0();
 }
 
+function updateDemo5() {
+  var w = ret(4).bnd(cube).x === cube(4).x;
+  console.log('updateDemo5: ', w);
+  mM1.ret(w);
+  update0();
+}
+
 function updateDemo6() {
-  mM1.bnd(add, 1).bnd(cube);
+  var w = ret('cow').bnd(ret).x === ret('cow').x;
+  console.log('updateDemo6: ', w);
+  mM2.ret(w);
   update0();
 }
 
@@ -270,24 +270,30 @@ function updateTest(event) {
   update0();
 }
 
-function updateSteps(event) {
-  mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret).bnd(mM4.ret).bnd(function () {
-    return mM1.ret('Click the mMI2.release() button to proceed').bnd(function () {
-      return mMI2.block().bnd(function () {
-        return mM2.ret('Click it again.').bnd(function () {
-          return mMI2.block().bnd(function () {
-            return mM3.ret('Keep going').bnd(function () {
-              return mMI2.block().bnd(function () {
-                return mM4.ret('One more').bnd(function () {
-                  return mMI2.block().bnd(function () {
-                    return mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret).bnd(mM4.ret);
+function updateSteps() {
+  mM1.ret(0).bnd(function (x) {
+    return mM2.ret(x).bnd(function () {
+      return mM3.ret(0().bnd(function (x) {
+        return mM4.ret(x).bnd(function () {
+          return mM1.ret('Click the mMI2.release() button to proceed').bnd(function () {
+            return mMI2.block().bnd(function () {
+              return mM2.ret('Click it again.').bnd(function () {
+                return mMI2.block().bnd(function () {
+                  return mM3.ret('Keep going').bnd(function () {
+                    return mMI2.block().bnd(function () {
+                      return mM4.ret('One more').bnd(function () {
+                        return mMI2.block().bnd(function () {
+                          return mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret).bnd(mM4.ret);
+                        });
+                      });
+                    });
                   });
                 });
               });
             });
           });
         });
-      });
+      }));
     });
   });
   console.log(mM1.x, mM2.x);
@@ -340,6 +346,36 @@ function update6l(event) {
   update0();
 }
 
+function update7e(event) {
+  style7 = style1;
+  update0();
+}
+
+function update7l(event) {
+  style7 = style2;
+  update0();
+}
+
+function update8e(event) {
+  style8 = style1;
+  update0();
+}
+
+function update8l(event) {
+  style8 = style2;
+  update0();
+}
+
+function update9e(event) {
+  style9 = style1;
+  update0();
+}
+
+function update9l(event) {
+  style9 = style2;
+  update0();
+}
+
 function updateRe(event) {
   styleR = style1;
   update0();
@@ -357,6 +393,13 @@ function updateEvent(event) {
 }
 
 oldVnode = patch(oldVnode, view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x));
+
+var update = function update(v) {
+  var mon = new Monad(v);
+  var newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
+  oldVnode = patch(oldVnode, newVnode);
+  return mon;
+};
 
 },{"./cow.js":1,"snabbdom":9,"snabbdom/h":3,"snabbdom/modules/class":5,"snabbdom/modules/eventlisteners":6,"snabbdom/modules/props":7,"snabbdom/modules/style":8}],3:[function(require,module,exports){
 var VNode = require('./vnode');
