@@ -59,14 +59,14 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part1'}, style: {color: '#EECCFF'}}, 'javascript-monads-part1' ),
       h('span', ' If pressing F12 switches your browser to a console, I think you will find that you have access to all of the monads and functions being used in this presentation, Try entering "mM1.ret("Hello world")" on the command like. Press F12 again and roll over (don\'t click it) the RE-SET button at the bottom of the right column. When the column gets updated, the new value of mM1.x that you created should appear. '  ),
       h('h3', 'This Series Is For Web Developers' ),
-     h('p', 'This is not about category theory or the lambda calculus. I verified that the monads presented here obey the Haskell monad laws because that reassures me that they are robust and versitile. I didn\t create a new ">>=" operator, so "bind" is a method on the monads. There is a "ret" method with resembles Haskell "return", and a "ret" function which is just like its Haskell counterpart.' ),
-     h('p', 'This project centers around a simple monad constructor, called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. ' ),
+     h('p', 'This is not about category theory or the lambda calculus. I verified that the monads presented here obey the Haskell monad laws because that reassures me that they are robust and versitile. I didn\'t create a new ">>=" operator, so "bnd" is a method on the monads. There is a "ret" method with resembles Haskell "return", and a "ret" function which is just like its Haskell counterpart.' ),
+     h('p', 'This project centers around a simple monad constructor called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. ' ),
     h('p', ' Here is how the Monad class is defined:'),
       cow.monad,
     h('p', 'And here are the functions we will use in this brief demonstration: '  ),  
       cow.functions1,
     h('p', 'add and cube are simple math functions. Monads with numeric values can use them with their "bnd" methods to manipulate their values and, in a similar manner, anonymous monads can be transformed along a chain of computatios. They can even be used to spawn anonymous monads, but that is what "ret" is for. ' ),
-    h('p',' ".x" extracts the result of an anonymous chain of computations. Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. ' ), 
+    h('p',' ".x" extracts the value from a monad, and can bring the result of an anonymous chain of computations into the global space. Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. ' ), 
    h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo1 }, style: style7},
    `mM5.ret(ret(0).bnd(add,3).bnd(cube).x)` ),
    h('p', 'The following computation yields the same result, demonstrating the Haskell monad associativity law. It is good to work with computation links that are "associative under Kleisli composition" as one might put it in a mathematical proof. For my purposes, it means these monads are robust and reiliant, and the order of evaluation along a chain is something about which I not concerned.   ' ),
@@ -75,21 +75,21 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
    h('p', 'Notice how x was handed to mM6 in the above computation. In the next computation, we send x even further down the line and combine it with mM2\'s value to get the result.'  ), 
    h('button', {on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5},
                'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'  ),
-   h('p', ' The bnd method provides the means to include versitile lambdas in chains of computations, tests, and other processes. '  ),
+   h('p', ' The bnd method provides the means to incorporate lambda expressions into a chain of monads. '  ),
    h('p', 'The other Haskell laws are:' ),
    h('pre', 
 `ret(v).bnd(f) = f(v)
 m.bnd(ret) = m
 `
     ),
-   h('p', 'The following examples illuste that the monads are obeying these laws. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow"  '  ),
+   h('p', 'The following examples show that the monads are obeying these laws. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow"  '  ),
    h('button', {on: { mouseenter: update9e, mouseleave: update9l, click: updateDemo5 }, style: style9},
                `mM1.ret(ret(4).bnd(cube).x === cube(4).x)` ),
    h('br'),
    h('br'),
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo6 }, style: style4},
                `mM2.ret(ret('cow').bnd(ret).x === ret('cow').x)`  ),
-    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. The one to one corresponsdence between the set of all possible javascript values operations upon them and all possible monads and arguments for "bnd" means that monads can do just about anything inside the monad space without affecting anything outside of it, and release their side affects only when needed and in a ways that avoid mutating ordinary variables.'  ), 
+    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. For any Javascript value v and function f such that f(v) = z, there is a monad m with value v and a function f\' such that m.bnd(f \' returns a monad with value f(v). That\'s what "new Monad(v).bnd(f)" does. This means that monads can do just about anything inside the monad space, affecting the global environment only if and when explicitly required to do so. For example, a property of an object might be changed at the end of a sequence of monads depending on certain speified conditions.'  ), 
       h('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '  ),
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style4}, [
    h('pre',
@@ -98,7 +98,7 @@ hello.ret('Hello world');`
     ),     ] ),
       h('p', 'Bye for now.'  ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
-      h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed . If the computations along the chain manipulate only monadic values, with a possible side effect only at the last link, we can use only pure (side-effect free) functions outside of the Monad and MonadIter classes. We could also refrain from mutating values outside of the monad world. What we would gain and what we would lose are hard to know from this theoretical vantage point, so in some future installment in this series, I will dig in and do some experimenting. "Fun with monads"? Well, I\'m having fun.  ' ),
+      h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed. ' ),
       h('span','The open source code for this page is at '  ),  
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part1'}, style: {color: '#EECCFF'}}, 'javascript-monads-part1' ),
       h('span', '  Demonstrations of this and the next pages in "Javascript Monads" project can be found at ',   ),
@@ -150,7 +150,6 @@ hello.ret('Hello world');`
 }  
 
 function update0() {
-  console.log('Hello from update0');
   const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x, hello.x);
   oldVnode = patch(oldVnode, newVnode);
 }
