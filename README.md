@@ -6,6 +6,6 @@ There is now a function named "ret" which performs like Haskell's "return", and 
 
 The project stresses chains and trees of anonymous monads that don't release values into the global environment unless and until they are required to do so.
 
-
+This repository is the code for an online presentation available at [schalk.net:3000][http://schalk.net:3000).
 
 
