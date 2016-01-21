@@ -12,6 +12,7 @@ const patch = snabbdom.init([
      
 var oldVnode = document.getElementById('placeholder');
 
+
 var style2 = {backgroundColor: '#000', textAlign: 'left', borderColor: 'darkred', outline: '0px',
   color: '#CCFDCB', borderRadius: '10px', paddingTop: '1.1px', paddingBottom: '5px', marginRight: '3px',
   marginLeft: '12px', fontSize: '22px' };
@@ -51,7 +52,7 @@ var styleR = style2;
 var styleRe = style1;
 var styleRl = style2;
 
-function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) { 
+function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) { 
     return h('div',{style: style3}, 
     [  h('div',{style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px'}}, 
     [ h('h2', {style: {textAlign: 'center', color:  '#BBFFFF'}}, 'JS Monads Part 1'),
@@ -68,8 +69,11 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
     h('p', 'add and cube are simple math functions. Monads with numeric values can use them with their "bnd" methods to manipulate their values and, in a similar manner, anonymous monads can be transformed along a chain of computatios. They can even be used to spawn anonymous monads, but that is what "ret" is for. ' ),
     h('p',' ".x" extracts the value from a monad, and can bring the result of an anonymous chain of computations into the global space. Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. ' ), 
    h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo1 }, style: style7},
-   `mM5.ret(ret(0).bnd(add,3).bnd(cube).x)` ),
-   h('p', 'The following computation yields the same result, demonstrating the Haskell monad associativity law. It is good to work with computation links that are "associative under Kleisli composition" as one might put it in a mathematical proof. For my purposes, it means these monads are robust and reiliant, and the order of evaluation along a chain is something about which I not concerned.   ' ),
+   `mM5.ret(ret(0).bnd(add,3).bnd(cube))` ),
+   h('p', 'Here is another way to assign "mM5" to a new monad. '   ),
+   h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo4 }, style: style7},
+   `ret(0).bnd(add,3).bnd(cube).bnd(v => mM5.ret(v))` ),
+   h('p', 'The following computation yields the same result, demonstrating the Haskell monad associativity law. It is good to work with computation links that are "associative under Kleisli composition" as one might put it in a mathematical proof. For my purposes, it means these monads are robust and reiliant, and I never need to be concerned about the order of evaluation along a chain of computations.' ),
    h('button', {on: { mouseenter: update8e, mouseleave: update8l, click: updateDemo2 }, style: style8},
   `ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)));`  ),
    h('p', 'Notice how x was handed to mM6 in the above computation. In the next computation, we send x even further down the line and combine it with mM2\'s value to get the result.'  ), 
@@ -82,7 +86,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2, hello) {
 m.bnd(ret) = m
 `
     ),
-   h('p', 'The following examples show that the monads are obeying these laws. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow"  '  ),
+   h('p', 'They hold in the following examples. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow". The algebraic proofs that these laws hold in general stem simply from the definition of "Monad".  '  ),
    h('button', {on: { mouseenter: update9e, mouseleave: update9l, click: updateDemo5 }, style: style9},
                `mM1.ret(ret(4).bnd(cube).x === cube(4).x)` ),
    h('br'),
@@ -90,13 +94,7 @@ m.bnd(ret) = m
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo6 }, style: style4},
                `mM2.ret(ret('cow').bnd(ret).x === ret('cow').x)`  ),
     h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. For any Javascript value v and function f such that f(v) = z, there is a monad m with value v and a function f\' such that m.bnd(f \' returns a monad with value f(v). That\'s what "new Monad(v).bnd(f)" does. This means that monads can do just about anything inside the monad space, affecting the global environment only if and when explicitly required to do so. For example, a property of an object might be changed at the end of a sequence of monads depending on certain speified conditions.'  ), 
-      h('p', 'Before wrapping up this first installment, I think I should provide a "Hello world." program. Here it is: '  ),
-   h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateHello }, style: style4}, [
-   h('pre',
-`var hello = new Monad;
-hello.ret('Hello world');`   
-    ),     ] ),
-      h('p', 'Bye for now.'  ),
+      h('p', ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
       h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed. ' ),
       h('span','The open source code for this page is at '  ),  
@@ -106,7 +104,7 @@ hello.ret('Hello world');`
       h('br', ),   
       h('div', {style: {height: '300px'}} ),
    ] ), 
-      h ('div',{style: { width: '30%', position: 'fixed', top: '200px', right: '15px', color: '#CCFDDA'}},
+      h ('div',{style: { width: '30%', position: 'fixed', top: '60px', right: '15px', color: '#CCFDDA'}},
         [
           h('br'),
           h('span', 'mM1.x: '),
@@ -139,9 +137,6 @@ hello.ret('Hello world');`
           h('span', 'mMI2.x: '),
           h('span', {style: styleMI}, '  ' + mI1),
           h('br'),
-          h('span', 'hello.x: '),
-          h('span', {style: styleMI}, '  ' + hello),
-          h('br'),
           h('br'),
       h('button', {on: { mouseenter: updateRe, mouseleave: updateRl, click: updateR }, style: styleR},
                      'RE-SET'   )           
@@ -150,7 +145,7 @@ hello.ret('Hello world');`
 }  
 
 function update0() {
-  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x, hello.x);
+  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
   oldVnode = patch(oldVnode, newVnode);
 }
 
@@ -162,9 +157,8 @@ function updateR(event) {
   mM5.ret(0);
   mM6.ret(0);
   mM7.ret(0);
-  mM8.ret(0);
-  hello.ret('Goodbye');
-  update0();
+  mM8.ret(0)
+  .bnd(update);
 }       
        
        
@@ -189,11 +183,6 @@ function updateDemo3() {
   update0();
 }
 
-function updateHello() {
-  hello.ret('Hello world.'); 
-  update0();
-}
-
 function updateAnon() {
   new Monad(0).bnd(add,3).bnd(cube).bnd(x => mM1.ret(x))
   update0();
@@ -209,16 +198,19 @@ function updateDemo2() {
   update0();
 }
 
+function updateDemo4() {
+  ret(0).bnd(add,3).bnd(cube).bnd(v => mM5.ret(v))
+  update0();
+}
+
 function updateDemo5() {
   let w = (ret(4).bnd(cube).x === cube(4).x);
-  console.log('updateDemo5: ', w);
   mM1.ret(w);
   update0();
 }
 
 function updateDemo6() {
   let w = (ret('cow').bnd(ret).x === ret('cow').x);
-  console.log('updateDemo6: ', w);
   mM2.ret(w);
   update0();
 }
@@ -397,12 +389,10 @@ function updateEvent(event) {
 oldVnode = patch(oldVnode, view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x));
 
 var update = function update(v) {
-  var mon = new Monad(v);
+  var mon = ret(5)
   const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
   oldVnode = patch(oldVnode, newVnode);
   return mon;
 }
-
-
 
 

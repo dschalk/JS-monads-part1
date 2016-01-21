@@ -4,12 +4,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Monad = function Monad(z) {
+var Monad = function Monad(z,g) {
   var _this = this;
 
   _classCallCheck(this, Monad);
 
   this.x = z;
+  if (arguments.length === 1) {this.id = 'anonymous'}
+  else {this.id = g}
 
   this.bnd = function (func) {
     for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -20,8 +22,10 @@ var Monad = function Monad(z) {
   };
 
   this.ret = function (a) {
-    _this.x = a;
-    return _this;
+    var str = _this.id
+    if (str === 'anonymous') {return new Monad(a,'anonymous')};
+    eval(str + '= new Monad(a,' + "str" + ')'); 
+    return window[_this.id];
   };
 
   this.fmap = function (f) {
@@ -99,22 +103,10 @@ var MonadIter = function MonadIter(z, g) {
       return self;
     }
   };
-  this.ret = function (a) {
-    var self = _this2;
-    if (self.x === false) {
-      self.x = a;
-    }
-    if (self.x === true) {
-      self.p = [self.id, 'ret', a];
-      return self;
-    }
-    _this2.x = false;
-    return _this2;
-  };
 };
 
 var ret = function ret(v) {
-  var mon = new Monad(v);
+  var mon = new Monad(v,'anonymous');
   return mon;
 }
 
@@ -128,21 +120,21 @@ var add = function(a,b) {
   return mon;
 }
 
-var M = function M(a) {
-  return new Monad(a);
+var M = function M(a,b) {
+  return new Monad(a,b);
 };
 
-var mM1 = M(0);
-var mM2 = M(0);
-var mM3 = M(0);
-var mM4 = M(0);
-var mM5 = M(0);
-var mM6 = M(0);
-var mM7 = M(0);
-var mM8 = M(0);
-var mM9 = M(0);
-var mM10 = M(0);
-var hello = M(42);
+
+var mM1 = M(0,'mM1');
+var mM2 = M(0,'mM2');
+var mM3 = M(0,'mM3');
+var mM4 = M(0,'mM4');
+var mM5 = M(0,'mM5');
+var mM6 = M(0,'mM6');
+var mM7 = M(0,'mM7');
+var mM8 = M(0,'mM8');
+var mM9 = M(0,'mM9');
+var mM10 = M(0,'mM10');
 var MI = function MI(a, b) {
   return new MonadIter(a, b);
 };

@@ -2,17 +2,21 @@ import snabbdom from 'snabbdom';
 import h from 'snabbdom/h';
 
 const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
-    constructor(z) {
+    constructor(z,g) {
 
       this.x = z;
+      if (arguments.length === 1) {this.id = 'anonymous'}
+      else {this.id = g}
 
       this.bnd = (func, ...args) => {
         func(this.x, ...args);
       };
 
       this.ret = a => {
-        this.x = a;
-        return this;
+        var str = this.id
+        if (str === 'anonymous') {return new Monad(a,'anonymous')};
+        eval(str + '= new Monad(a,' + "str" + ')'); 
+        return window[this.id];
       };
 
       this.fmap = (f, mon = this, ...args) => {      
@@ -71,18 +75,6 @@ const monadIter = h('pre', {style: {color: '#AFEEEE' }}, `  class MonadIter {
             self.p = [self.id, 'fmap', f, mon, args];
             return self;
           }
-      }
-      this.ret = a => { 
-        let self = this;
-          if (self.x === false) {
-            self.x = a;
-          }
-          if (self.x === true) {
-          self.p = [self.id, 'ret', a];
-          return self;
-          }
-        this.x = false;
-        return this;
       }
     }
   }
