@@ -93,7 +93,7 @@ m.bnd(ret) = m
    h('br'),
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo6 }, style: style4},
                `mM2.ret(ret('cow').bnd(ret).x === ret('cow').x)`  ),
-    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. For any Javascript value v and function f such that f(v) = z, there is a monad m with value v and a function f\' such that m.bnd(f \' returns a monad with value f(v). That\'s what "new Monad(v).bnd(f)" does. This means that monads can do just about anything inside the monad space, affecting the global environment only if and when explicitly required to do so. For example, a property of an object might be changed at the end of a sequence of monads depending on certain speified conditions.'  ), 
+    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. For any Javascript value v and function f such that f(v) = z, there is a monad m with value v and a function f\' such that "new Monad(v).bnd(f\')" returns a monad with value z. It follows that that just about anything that is possile can be done inside the monad space. "ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)))" (above) is an anonymous computation in the monad space whose result is exposed in the final step as "mM6.x" (right column). '  ), 
       h('p', ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
       h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed. ' ),
