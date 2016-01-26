@@ -1,6 +1,7 @@
 import snabbdom from 'snabbdom';
 import h from 'snabbdom/h';
 
+
 const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
     constructor(z,g) {
 
@@ -9,7 +10,7 @@ const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
       else {this.id = g}
 
       this.bnd = (func, ...args) => {
-        func(this.x, ...args);
+        return func(this.x, ...args);
       };
 
       this.ret = a => {
@@ -18,101 +19,44 @@ const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
         eval(str + '= new Monad(a,' + "str" + ')'); 
         return window[this.id];
       };
-
-      this.fmap = (f, mon = this, ...args) => {      
-        mon.ret( f(mon.x, ...args));
-        return mon;
-
-      };
     }
   };
 ` );  
   
 const monadIter = h('pre', {style: {color: '#AFEEEE' }}, `  class MonadIter {
     constructor(z,g) {
+
       this.x = z;
       this.id = g;
+      this.flag = false;
       this.p = [];
+
       this.block = () => {
-        this.x = true;
+        this.flag = true;
         return this;
         }
+
       this.release = () => {
-        this.x = false;
         let self = this;
         let p = this.p;
-        if (p[1] === 'bnd') {
-          p[2](self.x, self, ...p[3]);
-          return self;
-        }
-        if (p[1] === 'ret') {
-          self.x = p[2];
-          return self;
-        }
-        if (p[1] === 'fmap') { 
-          p[3].ret(p[2](p[3].x, ...p[4]));
-          return p[3];
-        }
-     }
+        p[0](self.x, ...p[1]);
+        self.flag = false;
+        return self;
+      }
+ 
       this.bnd = (func, ...args) => {
         let self = this;
-        if (self.x === false) {
+        if (self.flag === false) {
           func(self.x, ...args);
           return self;
         }
-        if (self.x === true) {
-          self.p = [self.id, 'bnd', func, args];
+        if (self.flag === true) {
+          self.p = [func, args];
           return self;
         }
       }
-      this.fmap = (f, mon = this, ...args) => {   
-        let self = this;
-          if (self.x === false) {
-            mon.ret(f(mon.x,  ...args));
-            return mon;
-          }
-          if (self.x === true) {
-            self.p = [self.id, 'fmap', f, mon, args];
-            return self;
-          }
-      }
     }
   }
-    constructor(z,g) {
-
-        this.x = z;
-        this.id = g;
-        this.flag = false;
-        this.p = [];
-  
-        this.block = () => {
-            this.flag = true;
-            return this;
-        }
-
-        this.release = () => {
-            let self = this;
-            let p = this.p;
-  
-            if (p[1] === 'bnd') {
-                p[2](self.x, self, ...p[3]);
-                self.flag = false;
-                return self;
-            }
-  
-            if (p[1] === 'ret') {
-                self.x = p[2];
-                self.flag = false;
-                return self;
-            }
-  
-            if (p[1] === 'fmap') { 
-                p[3].ret(p[2](p[3].x, ...p[4]));
-                self.flag = false;
-                return p[3];
-            }
-        }
-    };
 ` );  
 
 const steps = h('pre', {style: {color: '#AFEEEE' }}, `

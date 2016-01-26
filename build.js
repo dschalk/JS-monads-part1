@@ -15,9 +15,9 @@ var _snabbdomH = require('snabbdom/h');
 
 var _snabbdomH2 = _interopRequireDefault(_snabbdomH);
 
-var monad = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class Monad {\n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = (func, ...args) => {\n        func(this.x, ...args);\n      };\n\n      this.ret = a => {\n        var str = this.id\n        if (str === \'anonymous\') {return new Monad(a,\'anonymous\')};\n        eval(str + \'= new Monad(a,\' + "str" + \')\'); \n        return window[this.id];\n      };\n\n      this.fmap = (f, mon = this, ...args) => {      \n        mon.ret( f(mon.x, ...args));\n        return mon;\n\n      };\n    }\n  };\n');
+var monad = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class Monad {\n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = (func, ...args) => {\n        return func(this.x, ...args);\n      };\n\n      this.ret = a => {\n        var str = this.id\n        if (str === \'anonymous\') {return new Monad(a,\'anonymous\')};\n        eval(str + \'= new Monad(a,\' + "str" + \')\'); \n        return window[this.id];\n      };\n    }\n  };\n');
 
-var monadIter = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n    constructor(z,g) {\n      this.x = z;\n      this.id = g;\n      this.p = [];\n      this.block = () => {\n        this.x = true;\n        return this;\n        }\n      this.release = () => {\n        this.x = false;\n        let self = this;\n        let p = this.p;\n        if (p[1] === \'bnd\') {\n          p[2](self.x, self, ...p[3]);\n          return self;\n        }\n        if (p[1] === \'ret\') {\n          self.x = p[2];\n          return self;\n        }\n        if (p[1] === \'fmap\') { \n          p[3].ret(p[2](p[3].x, ...p[4]));\n          return p[3];\n        }\n     }\n      this.bnd = (func, ...args) => {\n        let self = this;\n        if (self.x === false) {\n          func(self.x, ...args);\n          return self;\n        }\n        if (self.x === true) {\n          self.p = [self.id, \'bnd\', func, args];\n          return self;\n        }\n      }\n      this.fmap = (f, mon = this, ...args) => {   \n        let self = this;\n          if (self.x === false) {\n            mon.ret(f(mon.x,  ...args));\n            return mon;\n          }\n          if (self.x === true) {\n            self.p = [self.id, \'fmap\', f, mon, args];\n            return self;\n          }\n      }\n    }\n  }\n    constructor(z,g) {\n\n        this.x = z;\n        this.id = g;\n        this.flag = false;\n        this.p = [];\n  \n        this.block = () => {\n            this.flag = true;\n            return this;\n        }\n\n        this.release = () => {\n            let self = this;\n            let p = this.p;\n  \n            if (p[1] === \'bnd\') {\n                p[2](self.x, self, ...p[3]);\n                self.flag = false;\n                return self;\n            }\n  \n            if (p[1] === \'ret\') {\n                self.x = p[2];\n                self.flag = false;\n                return self;\n            }\n  \n            if (p[1] === \'fmap\') { \n                p[3].ret(p[2](p[3].x, ...p[4]));\n                self.flag = false;\n                return p[3];\n            }\n        }\n    };\n');
+var monadIter = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n    constructor(z,g) {\n\n      this.x = z;\n      this.id = g;\n      this.flag = false;\n      this.p = [];\n\n      this.block = () => {\n        this.flag = true;\n        return this;\n        }\n\n      this.release = () => {\n        let self = this;\n        let p = this.p;\n        p[0](self.x, ...p[1]);\n        self.flag = false;\n        return self;\n      }\n \n      this.bnd = (func, ...args) => {\n        let self = this;\n        if (self.flag === false) {\n          func(self.x, ...args);\n          return self;\n        }\n        if (self.flag === true) {\n          self.p = [func, args];\n          return self;\n        }\n      }\n    }\n  }\n');
 
 var steps = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\n    mM1.ret(0)\n     .bnd(x => mM2.ret(x)\n     .bnd(() => mM3.ret(0()\n     .bnd(x => mM4.ret(x)\n     .bnd(() => mM1.ret(\'Click the mMI2.release() button to proceed\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM2.ret(\'Click it again.\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM3.ret(\'Keep going\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM4.ret(\'One more\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret)\n     .bnd(mM4.ret)\n      ))))))))) ))))\n     update0();\n');
 
@@ -210,60 +210,6 @@ function updateDemo8() {
 
 function updateDemo9() {
 
-  update0();
-}
-
-function update2B(event) {
-  mM1.ret(3).bnd(function (v) {
-    return mM2.ret(v).fmap(cu, mM2);
-  });
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2B2(event) {
-  mM3.ret(3).fmap(function (_) {
-    var a = mM3.x;mM4.ret(a).fmap(cu);return a;
-  });
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2B3(event) {
-  mM5.ret(3).bnd(mM6.ret).bnd(cube);
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2C(event) {
-  mM1.ret(3).fmap(function (v) {
-    return mM2.ret(v + 7);
-  }).bnd(pure);
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2D(event) {
-  mM3.ret(3).fmap(function (x) {
-    return x * x * x;
-  }).bnd(pure);
-  console.log(mM1.x, mM2.x);
-}
-
-function update5(event) {
-  mM1.bnd(add, 5).bnd(cube);
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function updateTest(event) {
-  mM8.ret('test');
-  mM2.ret(mM8.x);
-  mM3.fmap(function (_) {
-    return mM8.x;
-  });
-  mM8.bnd(mM4.ret);
-  console.log(mM1.x, mM2.x);
   update0();
 }
 

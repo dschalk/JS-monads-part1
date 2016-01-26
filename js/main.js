@@ -230,50 +230,6 @@ function updateDemo9() {
   update0();
 }
 
-function update2B(event) {
-  mM1.ret(3).bnd(v => mM2.ret(v).fmap(cu, mM2));
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2B2(event) {
-  mM3.ret(3).fmap( _ => {var a = mM3.x; mM4.ret(a).fmap(cu); return a})
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2B3(event) {
-  mM5.ret(3).bnd(mM6.ret).bnd(cube) 
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2C(event) {
-  mM1.ret(3).fmap(v => mM2.ret(v + 7)).bnd(pure);
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function update2D(event) {
-  mM3.ret(3).fmap(x => x*x*x).bnd(pure);
-  console.log(mM1.x, mM2.x);
-}
-
-function update5(event) {
-  mM1.bnd(add, 5).bnd(cube);
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function updateTest(event) {
-  mM8.ret('test');
-  mM2.ret(mM8.x);
-  mM3.fmap(_ => mM8.x);
-  mM8.bnd(mM4.ret);
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
 function updateSteps() {
     mM1.ret(0)
      .bnd(x => mM2.ret(x)
