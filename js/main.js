@@ -20,7 +20,7 @@ var style1 = {backgroundColor: 'blue', textAlign: 'left', borderColor: 'lightblu
   color: 'yellow', borderRadius: '10px', paddingTop: '1.1px', paddingBottom: '5px', marginRight: '3px',
   marginLeft: '12px', fontSize: '22px' };
 var style3 = { marginTop: '40px', backgroundColor: '#000', height: '100%' , width: '100%', color: '#FFE4C4', fontSize: '22px', textAlign: 'left' };
-var styleM = {color: '#FF000A', marginLeft: '13px', marginBottom: '2px', fontSize: '22px' };
+var styleM = {color: '#FF000A', marginLeft: '13px', marginBottom: '2px', fontSize: '28px' };
 var styleMI = {color: '#FF000A', marginLeft: '7px', marginBottom: '2px', fontSize: '22px' };
 var style0 = style2;
 
@@ -59,44 +59,40 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) {
       h('span', {style: {marginLeft: '18px'}},  'The code for this single-page site is at ' ),
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part1'}, style: {color: '#EECCFF'}}, 'javascript-monads-part1' ),
       h('span', ' If pressing F12 switches your browser to a console, I think you will find that you have access to all of the monads and functions being used in this presentation, Try entering "mM1.ret("Hello world")" on the command line, then roll over (don\'t click it) the RE-SET button at the bottom of the right column. When the column gets updated, the new value of mM1.x that you created should appear. '  ),
-      h('h3', 'This Series Is For Web Developers' ),
-     h('p', 'This is not about category theory or the lambda calculus. I verified that the monads presented here obey the Haskell monad laws because that reassures me that they are robust and versitile. I didn\'t create a new ">>=" operator, so "bnd" is a method on the monads. There is a "ret" method with resembles Haskell "return", and a "ret" function which is just like its Haskell counterpart.' ),
-     h('p', 'This project centers around a simple monad constructor called "Monad", and the more elaborate MonadIter constructor whose instances can take control of the order of execution of monad trees, wait for asynchronous events to complete, and interactively step through sequences. They do some things that ES6 Promises and Generators do, but in different ways, and are by no means meant as a replacement for them. ' ),
     h('p', ' Here is how the Monad class is defined:'),
       cow.monad,
     h('p', 'And here are the functions we will use in this brief demonstration: '  ),  
       cow.functions1,
-    h('p', 'add and cube are simple math functions. Monads with numeric values can use them with their "bnd" methods to manipulate their values and, in a similar manner, anonymous monads can be transformed along a chain of computatios. They can even be used to spawn anonymous monads, but that is what "ret" is for. ' ),
-    h('p',' ".x" extracts the value from a monad, and can bring the result of an anonymous chain of computations into the global space. Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. ' ), 
+    h('p',' Here we create a monad with value 0, add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is shown in the right column. ' ), 
    h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo1 }, style: style7},
    `mM5.ret(ret(0).bnd(add,3).bnd(cube))` ),
    h('p', 'Here is another way to assign "mM5" to a new monad. '   ),
    h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo4 }, style: style7},
    `ret(0).bnd(add,3).bnd(cube).bnd(v => mM5.ret(v))` ),
-   h('p', 'The following computation yields the same result, demonstrating the Haskell monad associativity law. It is good to work with computation links that are "associative under Kleisli composition" as one might put it in a mathematical proof. For my purposes, it means these monads are robust and reiliant, and I never need to be concerned about the order of evaluation along a chain of computations.' ),
+   h('p', 'The following computation yields the same result: ' ),
    h('button', {on: { mouseenter: update8e, mouseleave: update8l, click: updateDemo2 }, style: style8},
   `ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)));`  ),
    h('p', 'Notice how x was handed to mM6 in the above computation. In the next computation, we send x even further down the line and combine it with mM2\'s value to get the result.'  ), 
    h('button', {on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5},
                'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'  ),
    h('p', ' The bnd method provides the means to incorporate lambda expressions into a chain of monads. '  ),
-   h('p', 'The other Haskell laws are:' ),
+   h('p', 'The following relationships help explain why I call Monad instances "monads": ' ),
    h('pre', 
 `ret(v).bnd(f) = f(v)
-m.bnd(ret) = m
+ret(v).bnd(ret) = ret(v)
 `
     ),
-   h('p', 'They hold in the following examples. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow". The algebraic proofs that these laws hold in general stem simply from the definition of "Monad".  '  ),
+   h('p', 'They can be derived from the definitions or "ret" and "Monad". Here, we show that they hold in a specific example. The monads are distinct and not equal under "===", but 64 === 64 and "cow" === "cow". The results are placed in mM1 and mM2 respectively. '  ),
    h('button', {on: { mouseenter: update9e, mouseleave: update9l, click: updateDemo5 }, style: style9},
                `mM1.ret(ret(4).bnd(cube).x === cube(4).x)` ),
    h('br'),
    h('br'),
    h('button', {on: { mouseenter: update4e, mouseleave: update4l, click: updateDemo6 }, style: style4},
                `mM2.ret(ret('cow').bnd(ret).x === ret('cow').x)`  ),
-    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. For any Javascript value v and function f such that f(v) = z, there is a monad m with value v and a function f\' such that "new Monad(v).bnd(f\')" returns a monad with value z. It follows that that just about anything that is possile can be done inside the monad space. "ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)))" (above) is an anonymous computation in the monad space whose result is exposed in the final step as "mM6.x" (right column). '  ), 
+    h('p', 'The value of a monad can be any javascript value, even an object containing arrays of monads and functions. There are no limitations. For any Javascript value v and function f such that f(v) = z, there is a monad m with value v and a function f\' such that "new Monad(v).bnd(f\')" returns a monad with value z. It follows that that just about anything that is possile in javascript can be done inside the monads. For example, "ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)))" (above) is a computation in monads whose result is exposed in the final step as "mM6.x" (right column). '  ), 
       h('p', ),
       h('h3', 'Next: Websocket interractions with MonadIter instances. ' ),
-      h('p', 'In the next section, we will see how MonadIter facilitates building lazy chains of computations that can be paused, interacted with, and possibly never executed. ' ),
+      h('p', 'In the next section, "JS-monads-part2", we will see how MonadIter facilitates building chains and trees of sometimes asynchronous computations. It utilyzes a Haskell websockets server. ' ),
       h('span','The open source code for this page is at '  ),  
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part1'}, style: {color: '#EECCFF'}}, 'JS-monads-part1' ),
       h('span', '  Demonstrations of this and the next pages in "Javascript Monads" project can be found at ',   ),
@@ -104,7 +100,7 @@ m.bnd(ret) = m
       h('br', ),   
       h('div', {style: {height: '300px'}} ),
    ] ), 
-      h ('div',{style: { width: '30%', position: 'fixed', top: '60px', right: '15px', color: '#CCFDDA'}},
+      h ('div',{style: { width: '20%', position: 'fixed', top: '60px', right: '15px', color: '#CCFDDA', fontSize: '26px'}},
         [
           h('br'),
           h('span', 'mM1.x: '),
