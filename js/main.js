@@ -52,7 +52,7 @@ var styleR = style2;
 var styleRe = style1;
 var styleRl = style2;
 
-function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) { 
+function view(m1, m2, m3, m4, m5, m6, m7, m8) { 
     return h('div',{style: style3}, 
     [  h('div',{style: { width: '65%', textAlign: 'left', marginLeft: 40, marginRight: '17%', fontSize: '24px'}}, 
     [ h('h2', {style: {textAlign: 'center', color:  '#BBFFFF'}}, 'JS Monads Part 1'),
@@ -74,7 +74,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8, mI1, mI2) {
   `ret(0).bnd(x => add(x,3).bnd(cube).bnd(x => mM6.ret(x)));`  ),
    h('p', 'Notice how x was handed to mM6 in the above computation. In the next computation, we send x even further down the line and combine it with mM2\'s value to get the result.'  ), 
    h('button', {on: { mouseenter: update5e, mouseleave: update5l, click: update2 }, style: style5},
-               'mM1.ret(3).bnd(x => mM2.ret(4).bnd(y => mM3.ret(x + y)))'  ),
+               'mM1.ret(6).bnd(x => mM2.ret(7).bnd(y => mM3.ret(x * y)))'  ),
    h('p', ' The bnd method provides the means to incorporate lambda expressions into a chain of monads. '  ),
    h('p', 'The following relationships help explain why I call Monad instances "monads": ' ),
    h('pre', 
@@ -127,12 +127,6 @@ ret(v).bnd(ret) = ret(v)
           h('span', 'mM8.x: '),
           h('span', {style: styleM}, '  ' + m8),
           h('br'),
-          h('span', 'mMI1.x: '),
-          h('span', {style: styleMI}, '  ' + mI1),
-          h('br'),
-          h('span', 'mMI2.x: '),
-          h('span', {style: styleMI}, '  ' + mI1),
-          h('br'),
           h('br'),
       h('button', {on: { mouseenter: updateRe, mouseleave: updateRl, click: updateR }, style: styleR},
                      'RE-SET'   )           
@@ -141,7 +135,7 @@ ret(v).bnd(ret) = ret(v)
 }  
 
 function update0() {
-  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
+  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x);
   oldVnode = patch(oldVnode, newVnode);
 }
 
@@ -226,32 +220,6 @@ function updateDemo9() {
   update0();
 }
 
-function updateSteps() {
-    mM1.ret(0)
-     .bnd(x => mM2.ret(x)
-     .bnd(() => mM3.ret(0()
-     .bnd(x => mM4.ret(x)
-     .bnd(() => mM1.ret('Click the mMI2.release() button to proceed')
-     .bnd(() => mMI2.block()
-     .bnd(() => mM2.ret('Click it again.')
-     .bnd(() => mMI2.block()
-     .bnd(() => mM3.ret('Keep going')
-     .bnd(() => mMI2.block()
-     .bnd(() => mM4.ret('One more')
-     .bnd(() => mMI2.block()
-     .bnd(() => mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret)
-     .bnd(mM4.ret)
-      ))))))))) ))))
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
-function updateNext(event) {
-  mMI2.release()  
-  console.log(mM1.x, mM2.x);
-  update0();
-}
-
 function update3e(event) {
   style0 = style1;
   update0();
@@ -332,17 +300,11 @@ function updateRl(event) {
   update0();
 }
 
-function updateEvent(event) {
-  mMI2.ret(event.data);
-  console.log(event);
-  update0();
-}
-
-oldVnode = patch(oldVnode, view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x));
+oldVnode = patch(oldVnode, view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x));
 
 var update = function update(v) {
   var mon = ret(5)
-  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x, mMI1.x, mMI2.x);
+  const newVnode = view(mM1.x, mM2.x, mM3.x, mM4.x, mM5.x, mM6.x, mM7.x, mM8.x);
   oldVnode = patch(oldVnode, newVnode);
   return mon;
 }

@@ -1,7 +1,11 @@
 'use strict';
 
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) { 
+  if (!(instance instanceof Constructor)) { 
+    throw new TypeError('Cannot call a class as a function'); 
+  } 
+}
 
 var Monad = function Monad(z, g) {
   var _this = this;
@@ -30,48 +34,6 @@ var Monad = function Monad(z, g) {
 };
 
 ;
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-
-var MonadIter = function MonadIter(z, g) {
-  var _this = this;
-
-  _classCallCheck(this, MonadIter);
-
-  this.x = z;
-  this.id = g;
-  this.flag = false;
-  this.p = [];
-
-  this.block = function () {
-    _this.flag = true;
-    return _this;
-  };
-
-  this.release = function () {
-    var self = _this;
-    var p = _this.p;
-    p[0].apply(p, [self.x].concat(_toConsumableArray(p[1])));
-    self.flag = false;
-    return self;
-  };
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var self = _this;
-    if (self.flag === false) {
-      func.apply(undefined, [self.x].concat(args));
-      return self;
-    }
-    if (self.flag === true) {
-      self.p = [func, args];
-      return self;
-    }
-  };
-};
 
 var ret = function ret(v) {
   var mon = new Monad(v, 'anonymous');
@@ -103,16 +65,6 @@ var mM7 = M(0,'mM7');
 var mM8 = M(0,'mM8');
 var mM9 = M(0,'mM9');
 var mM10 = M(0,'mM10');
-var MI = function MI(a, b) {
-  return new MonadIter(a, b);
-};
-
-var mMI1 = MI(0, 'mMI1');
-var mMI2 = MI(0, 'mMI2');
-var mMI3 = MI(0, 'mMI3');
-var mMI4 = MI(0, 'mMI4');
-var mMI5 = MI(0, 'mMI5');
-var mMI6 = MI(0, 'mMI6');
 
 var doub = function doub(v) {
   let mon = new Monad(v + v);
