@@ -1,9 +1,37 @@
 #JS-monads-part1 
 
-The monads now map values, instead of monads, to monads. The functions I use here return new monads. They don't mutate them. Functions can be defined however you like, but for my purposes, "m.bnd(f, ...args)" no longer replaces the value in m or any other monad. "m.bnd(f)" results in a new monad with value f(m.x) where f is a function, m is a monad, and m.x is the value of m. 
+This repository is the code for an interactive online presentation available at [schalk.net](http://schalk.net). It is a brief introduction to the use of instances of the monad constructor "Monad" with the three functions shown below. 
 
-There is now a function named "ret" which performs like Haskell's "return", and monads still have a "ret" method for replacing their values, but now, the monad's identifier is reasigned to a new monad with the new value. 
+  class Monad {
+    var _this = this;
+    constructor(z,g) {
 
-This repository is the code for an online presentation available at [schalk.net:3000][http://schalk.net:3000).
+      this.x = z;
+      if (arguments.length === 1) {this.id = 'anonymous'}
+      else {this.id = g}
 
+      this.bnd = function (func, ...args) {
+        return func(_this.x, ...args);
+      };
 
+      this.ret = function (a) {
+        _this.x = a;
+        return _this;
+      };
+    }
+  };
+
+  var cube = function(v) {
+    var mon = new Monad(v, "v");
+    return mon;
+  }
+  
+  var add = function(a,b) {
+    var mon = new Monad(a + b);
+    return mon;
+  }
+  
+  var ret = function ret(v) {
+    var mon = new Monad(v);
+    return mon;
+  }

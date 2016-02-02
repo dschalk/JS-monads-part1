@@ -3,62 +3,25 @@ import h from 'snabbdom/h';
 
 
 const monad = h('pre', {style: {color: '#AFEEEE' }}, `  class Monad {
+    var _this = this;
     constructor(z,g) {
 
       this.x = z;
       if (arguments.length === 1) {this.id = 'anonymous'}
       else {this.id = g}
 
-      this.bnd = (func, ...args) => {
-        return func(this.x, ...args);
+      this.bnd = function (func, ...args) {
+        return func(_this.x, ...args);
       };
 
-      this.ret = a => {
-        var str = this.id
-        if (str === 'anonymous') {return new Monad(a,'anonymous')};
-        eval(str + '= new Monad(a,' + "str" + ')'); 
-        return window[this.id];
+      this.ret = function (a) {
+        _this.x = a;
+        return _this;
       };
-    }
+    };
   };
 ` );  
   
-const monadIter = h('pre', {style: {color: '#AFEEEE' }}, `  class MonadIter {
-    constructor(z,g) {
-
-      this.x = z;
-      this.id = g;
-      this.flag = false;
-      this.p = [];
-
-      this.block = () => {
-        this.flag = true;
-        return this;
-        }
-
-      this.release = () => {
-        let self = this;
-        let p = this.p;
-        p[0](self.x, ...p[1]);
-        self.flag = false;
-        return self;
-      }
- 
-      this.bnd = (func, ...args) => {
-        let self = this;
-        if (self.flag === false) {
-          func(self.x, ...args);
-          return self;
-        }
-        if (self.flag === true) {
-          self.p = [func, args];
-          return self;
-        }
-      }
-    }
-  }
-` );  
-
 const steps = h('pre', {style: {color: '#AFEEEE' }}, `
     mM1.ret(0)
      .bnd(x => mM2.ret(x)
@@ -140,22 +103,6 @@ const test7 = h('pre', {style: {color: '#AFEEEE' }},
 const next = h('div', {style: {fontSize: '28px', color: 'FFFF00'}}, 'mMI2.release()'  );
 
 
-export default {monad, monadIter, steps, next, test, functions1, lambdas};
-
-
-
-// Cows and horses.
-
-
-
-
-
-
-
-
-
-
-
-
+export default {monad, steps, next, test, functions1, lambdas};
 
 

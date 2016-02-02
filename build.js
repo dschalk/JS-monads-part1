@@ -15,9 +15,7 @@ var _snabbdomH = require('snabbdom/h');
 
 var _snabbdomH2 = _interopRequireDefault(_snabbdomH);
 
-var monad = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class Monad {\n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = (func, ...args) => {\n        return func(this.x, ...args);\n      };\n\n      this.ret = a => {\n        var str = this.id\n        if (str === \'anonymous\') {return new Monad(a,\'anonymous\')};\n        eval(str + \'= new Monad(a,\' + "str" + \')\'); \n        return window[this.id];\n      };\n    }\n  };\n');
-
-var monadIter = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n    constructor(z,g) {\n\n      this.x = z;\n      this.id = g;\n      this.flag = false;\n      this.p = [];\n\n      this.block = () => {\n        this.flag = true;\n        return this;\n        }\n\n      this.release = () => {\n        let self = this;\n        let p = this.p;\n        p[0](self.x, ...p[1]);\n        self.flag = false;\n        return self;\n      }\n \n      this.bnd = (func, ...args) => {\n        let self = this;\n        if (self.flag === false) {\n          func(self.x, ...args);\n          return self;\n        }\n        if (self.flag === true) {\n          self.p = [func, args];\n          return self;\n        }\n      }\n    }\n  }\n');
+var monad = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class Monad {\n    var _this = this;\n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(_this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        _this.x = a;\n        return _this;\n      };\n    };\n  };\n');
 
 var steps = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '\n    mM1.ret(0)\n     .bnd(x => mM2.ret(x)\n     .bnd(() => mM3.ret(0()\n     .bnd(x => mM4.ret(x)\n     .bnd(() => mM1.ret(\'Click the mMI2.release() button to proceed\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM2.ret(\'Click it again.\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM3.ret(\'Keep going\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM4.ret(\'One more\')\n     .bnd(() => mMI2.block()\n     .bnd(() => mM1.ret(0).bnd(mM2.ret).bnd(mM3.ret)\n     .bnd(mM4.ret)\n      ))))))))) ))))\n     update0();\n');
 
@@ -39,9 +37,7 @@ var test7 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, 
 
 var next = (0, _snabbdomH2['default'])('div', { style: { fontSize: '28px', color: 'FFFF00' } }, 'mMI2.release()');
 
-exports['default'] = { monad: monad, monadIter: monadIter, steps: steps, next: next, test: test, functions1: functions1, lambdas: lambdas };
-
-// Cows and horses.
+exports['default'] = { monad: monad, steps: steps, next: next, test: test, functions1: functions1, lambdas: lambdas };
 module.exports = exports['default'];
 
 },{"snabbdom":9,"snabbdom/h":3}],2:[function(require,module,exports){
