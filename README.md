@@ -1,7 +1,7 @@
 #JS-monads-part1 
 
 This repository is the code for an interactive online presentation available at [schalk.net](http://schalk.net). It is a brief introduction to the use of instances of the monad constructor "Monad" with the three functions shown below. 
-
+```javascript
   class Monad {
     var _this = this;
     constructor(z,g) {
@@ -35,3 +35,4 @@ This repository is the code for an interactive online presentation available at 
     var mon = new Monad(v);
     return mon;
   }
+```
