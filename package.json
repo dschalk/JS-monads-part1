@@ -1,6 +1,6 @@
 {
   "name": "snabbdom-starter",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Simple snabbdom starter repository",
   "main": "nant2.js",
   "repository": {
