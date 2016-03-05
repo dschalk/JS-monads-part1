@@ -10,8 +10,6 @@ function _classCallCheck(instance, Constructor) {
 var Monad = function Monad(z, g) {
   var _this = this;
 
-  _classCallCheck(this, Monad);
-
   this.x = z;
   if (arguments.length === 1) {
     this.id = 'anonymous';
@@ -28,26 +26,23 @@ var Monad = function Monad(z, g) {
   };
 
   this.ret = function (a) {
-    _this.x = a;
-    return _this;
+    window[_this.id] = new Monad(a, _this.id);
+    return window[_this.id];
   };
 };
 
 ;
 
-var ret = function ret(v) {
-  var mon = new Monad(v, 'anonymous');
-  return mon;
-}
-
 var cube = function(v) {
-  var mon = new Monad(v*v*v);
-  return mon;
+  return new Monad(v*v*v);
 }
 
-var add = function(a,b) {
-  var mon = new Monad(a+b);
-  return mon;
+var add = function(a, b) {
+ return new Monad(a+b);
+}
+
+var ret = function ret(v) {
+  return new Monad(v);
 }
 
 var M = function M(a,b) {
@@ -66,114 +61,18 @@ var mM8 = M(0,'mM8');
 var mM9 = M(0,'mM9');
 var mM10 = M(0,'mM10');
 
-var doub = function doub(v) {
-  let mon = new Monad(v + v);
+var doub = function doub(id, v) {
+  let mon = new Monad(v + v, id);
   return mon;
 };
 
-var square = function square(v) {
-  let mon = new Monad(v * v);
+var square = function square(id, v) {
+  let mon = new Monad(v * v, id);
   return mon;
 };
 
-var tripple = function tripple(mon) {
-  mon.ret(mon.x + mon.x + mon.x);
+var mult = function mult(id, x, y) {
+  let mon = new Monad(x * y, id);
   return mon;
 };
-
-var mult = function mult(x, y) {
-  let mon = new Monad(x * y);
-  return mon;
-};
-
-var rand = function rand(a, b) {
-  return Math.floor(Math.random() * (a - b)) + b;
-};
-
-var ran = function ran(mon) {
-  mon.ret(Math.floor(Math.random() * -4 + 5));
-  return mon;
-};
-
-var chance = function chance(mon) {
-  var a = rand(1, 5);
-  var b = rand(1, 5);
-  var c = rand(1, 5);
-  mM1.ret(a);
-  mM2.ret(b);
-  mM3.ret(c);
-  if (a === b && a === c) {
-    mM4.ret('Winner! Three of a kind');
-    return mon;
-  }
-  if (a === b || a === c || b === c) {
-    mM4.ret('Pair. Try for three');
-    return mon;
-  }
-  mM4.ret('Zilch. Don\'t give up now.');
-  return mon;
-};
-
-var ch = function ch(mon, a, b, c) {
-  if (a === b && a === c) {
-    mon.ret('Winner! Three of a kind');
-    return mon;
-  }
-  if (a === b || a === c || b === c) {
-    mon.ret('Pair. Try for three');
-    return mon;
-  }
-  mon.ret('Zilch. Don\'t give up now.');
-  return mon;
-};
-
-var jackpot = function jackpot(mon) {
-  var k = 1;
-  for (k; k < 5; k += 1) {
-    if (x === [k, k, k, k, k, k]) {
-      mM10.ret("Jackpot!");
-      return mon;
-    }
-  }
-  mM10.ret("No jackpot time");
-  return mon;
-};
-
-var cu = function cu(x) {
-  return x * x * x;
-};
-var sq = function sq(x) {
-  return x * x;
-};
-var du = function du(x) {
-  return x * x;
-};
-var ad = function ad(a, b) {
-  return a + b;
-};
-var id = function id(x) {
-  return x;
-};
-var lo = function lo(x) {
-  return console.log(x);
-};
-
-var block = function block(mon, mon2) {
-  mon2.flag = true;
-  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$', mon2.id, mon2.x, mon2.flag);
-  return mon;
-};
-
-var release = function release(mon, mon2) {
-  mon2.flag = false;
-  console.log('***************************', mon2.id, mon2.x, mon2.flag);
-  return mon;
-};
-
-var delay = function delay(mon) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(resolve, 2000);
-  });
-};
-
 
