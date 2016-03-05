@@ -62,7 +62,7 @@ function view(m1, m2, m3, m4, m5, m6, m7, m8) {
       cow.monad,
     h('p', 'The monads used here are defined like this: "var mM1 = new Monad(0, "mM1")". Here are the functions we will use in this brief demonstration: '  ),  
       cow.functions1,
-    h('p',' Here we create an anonymous monad with value 0 (ret(0)), add 3 to it, cube the value. We then put the value in a monad named "mM5". mM5.x is displayed in the right column. ' ), 
+    h('p',' Here we create an anonymous monad with value 0 (ret(0)), add 3 to it, cube the value. "mM5.ret(..." makes the anonymous monad the value of mM5. mM5.x is displayed in the right column. ' ), 
    h('button', {on: { mouseenter: update7e, mouseleave: update7l, click: updateDemo1 }, style: style7},
    `mM5.ret(ret(0).bnd(add,3).bnd(cube))` ),
    h('p', 'Here is another way to assign "mM5" to a new monad. '   ),
